@@ -4,7 +4,8 @@ What's New
 These were the major changes contributing to each release:
 
 ### 0.x.x
-
+(2022-12-29)
+* Add multibacktesting feature
 
 ### 0.3.3
 (2021-12-13)
