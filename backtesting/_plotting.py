@@ -665,7 +665,7 @@ return this.labels[index] || "";
         **kwargs
     )
     show(fig, browser=None if open_browser else 'none')
-    return fig
+    return fig, plots
 
 
 def plot_heatmaps(heatmap: pd.Series, agg: Union[Callable, str], ncols: int,

@@ -271,6 +271,12 @@ class Strategy(metaclass=ABCMeta):
     def equity(self) -> float:
         """Current account equity (cash plus assets)."""
         return self._broker.equity
+    
+    @equity.setter
+    def equity(self, value) -> float:
+        print(f"Fill equity by {value}")
+        self._broker.equity = value
+        # self._equity = value
 
     @property
     def data(self) -> _Data:
@@ -757,6 +763,7 @@ class _Broker:
         ), f"margin should be between 0 and 1, is {margin}"
         self._data: _Data = data
         self._cash = cash
+        self._additional_cash = 0
         self._commission = commission
         self._leverage = 1 / margin
         self._trade_on_close = trade_on_close
@@ -834,6 +841,8 @@ class _Broker:
 
         return order
 
+
+
     @property
     def last_price(self) -> float:
         """Price at the last (current) close."""
@@ -850,7 +859,17 @@ class _Broker:
 
     @property
     def equity(self) -> float:
-        return self._cash + sum(trade.pl for trade in self.trades)
+        return (
+            self._cash +
+            sum(trade.pl for trade in self.trades) +
+            self._additional_cash
+        )
+    
+    # @equity.setter
+    # def equity(self, value):
+    #     print(f"Fill equity by {value}")
+    #     self._equity = value
+    #     # self._equity = value
 
     @property
     def margin_available(self) -> float:
@@ -874,6 +893,7 @@ class _Broker:
             for trade in self.trades:
                 self._close_trade(trade, self._data.Close[-1], i)
             self._cash = 0
+            self._additional_cash = 0
             self._equity[i:] = 0
             raise _OutOfMoneyError
 
