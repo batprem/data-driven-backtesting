@@ -55,6 +55,9 @@ if IS_JUPYTER_NOTEBOOK:
     output_notebook()
 
 
+plot_log = {}
+
+
 def set_bokeh_output(notebook=False):
     """
     Set Bokeh to output either to a file or Jupyter notebook.
@@ -170,7 +173,7 @@ def plot(*, results: pd.Series,
          smooth_equity=False, relative_equity=True,
          superimpose=True, resample=True,
          reverse_indicators=True,
-         show_legend=True, open_browser=True):
+         show_legend=True, open_browser=True, extra_pad=1000):
     """
     Like much of GUI code everywhere, this is a mess.
     """
@@ -218,7 +221,7 @@ def plot(*, results: pd.Series,
         active_drag='xpan',
         active_scroll='xwheel_zoom')
 
-    pad = (index[-1] - index[0]) / 20
+    pad = (index[-1] - index[0]) / 20 + extra_pad
 
     fig_ohlc = new_bokeh_figure(
         x_range=Range1d(index[0], index[-1],
@@ -558,6 +561,10 @@ return this.labels[index] || "";
                             'index', source_name, source=source,
                             legend_label=legend_label, line_color=color,
                             line_width=1.3)
+                        plot_log["index"] = index
+                        plot_log["source_name"] = source_name
+                        plot_log["source"] = source
+                        
                 else:
                     if is_scatter:
                         r = fig.scatter(
@@ -645,7 +652,7 @@ return this.labels[index] || "";
         f.min_border_left = 0
         f.min_border_top = 3
         f.min_border_bottom = 6
-        f.min_border_right = 10
+        f.min_border_right = 2
         f.outline_line_color = '#666666'
 
         f.add_tools(linked_crosshair)
